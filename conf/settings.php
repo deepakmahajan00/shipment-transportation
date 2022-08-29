@@ -31,7 +31,7 @@ return function (ContainerBuilder $containerBuilder) {
           'cache' => null,
         ],
         'cache_dir' => $rootPath . '/var/cache/doctrine',
-        /*'connection' => [
+        'connection' => [
           'driver' => 'pdo_mysql',
           'host' => '127.0.0.1',
           'port' => 13306,
@@ -40,8 +40,8 @@ return function (ContainerBuilder $containerBuilder) {
           'password' => 'pole',
           'charset' => 'utf-8',
           'unix_socket' => '/var/run/mysqld/mysqld.sock',
-        ]*/
-        'connection' => [
+        ]
+        /*'connection' => [
           'driver' => 'pdo_mysql',
           'host' => 'mydb',
           'port' => 3306,
@@ -50,7 +50,7 @@ return function (ContainerBuilder $containerBuilder) {
           'password' => 'pole',
           'charset' => 'utf-8',
           'unix_socket' => '/var/run/mysqld/mysqld.sock',
-        ]
+        ]*/
       ],
 
       // monolog settings

@@ -2,24 +2,39 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class LoadShipment extends BaseLoadData
 {
-  protected static function insertShipments(): void
+  public function run($conn, OutputInterface $output, array &$shipments, ?array $input = [])
   {
-    $companies = LoadCompany::getCompanies();
-    $carriers = LoadCarrier::getCarriers();
+    $this->conn = $conn;
+    $this->output = $output;
+    $this->insertShipments($shipments['shipments'], $conn, $output);
+  }
+
+  protected function insertShipments(array $shipments, $conn, $output): void
+  {
+    $company = new LoadCompany();
+    $company->conn = $conn;
+    $companies = $company->getCompanies();
+
+    $carrier = new LoadCarrier();
+    $carrier->conn = $conn;
+    $carriers = $carrier->getCarriers();
+
     $values = [];
-    foreach(self::$shipments as $row) {
+    foreach($shipments as $row) {
       $companyId = $companies[$row['company_id']];
       $carrierId = $carriers[$row['carrier_id']];
       $values[] = "(".$row['shipmentId'].", ".$row['distance'].", ".$row['time'].", ".$companyId.", ".$carrierId.")";
     }
     $sql = "INSERT INTO `shipments` (`id`, `distance`, `time`, `company_id`, `carrier_id`) VALUES " . implode(',', $values);
-    self::$conn->query($sql);
-    self::$output->writeln("Total number of shipments inserted ".count($values));
+    $this->conn->query($sql);
+    $this->output->writeln("Total number of shipments inserted ".count($values));
   }
 
-  protected static function constructShipment(array $shipmentRow): void
+  public static function constructShipment(array $shipmentRow, array &$shipments): void
   {
     $shipment['shipmentId'] = $shipmentRow['id'];
     $shipment['distance'] = $shipmentRow['distance'];;
@@ -27,6 +42,6 @@ class LoadShipment extends BaseLoadData
     $shipment['price'] = 0.00;
     $shipment['company_id'] = $shipmentRow['company']['email'];
     $shipment['carrier_id'] = $shipmentRow['carrier']['email'];
-    self::$shipments[$shipmentRow['id']] = $shipment;
+    $shipments['shipments'][$shipmentRow['id']] = $shipment;
   }
 }

@@ -40,8 +40,7 @@ class InitDB extends Command
       return Command::INVALID;
     }
 
-    $loadDataToDBObj = new LoadDataToDB();
-    $loadDataToDBObj->loadData($conn, $output);
+    (new LoadDataToDB())->loadData($conn, $output);
     $conn->close();
     return Command::SUCCESS;
   }

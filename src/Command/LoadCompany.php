@@ -2,35 +2,44 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class LoadCompany extends BaseLoadData
 {
 
-  public static function insertCompanies(): void
+  public function run($conn, OutputInterface $output, array &$shipments, ?array $input = [])
+  {
+    $this->conn = $conn;
+    $this->output = $output;
+    $this->insertCompanies($shipments['companies']);
+  }
+
+  public function insertCompanies(array $companies): void
   {
     $values = [];
-    foreach(self::$companies as $email => $row) {
+    foreach($companies as $email => $row) {
       $compName = $row['name'];
       $values[] = "('".$email."', '".$compName."')";
     }
     $query = "INSERT INTO `companies` (`email`, `name`) VALUES " . implode(',', $values);
-    self::$conn->query($query);
-    self::$output->writeln("Total number of companies inserted ".count(self::$companies));
+    $this->conn->query($query);
+    $this->output->writeln("Total number of companies inserted ".count($companies));
   }
 
-  public static function getCompanies(): array
+  public function getCompanies(): array
   {
-    $result = self::$conn->query("SELECT * FROM `companies`");
+    $result = $this->conn->query("SELECT * FROM `companies`");
     $companies = $result->fetch_all(MYSQLI_ASSOC);
     $result->free_result();
     return array_column($companies, 'id', 'email');
   }
 
-  public static function constructCompany(int $shipmentId, array $company): void
+  public static function constructCompany(int $shipmentId, array $company, array &$shipments): void
   {
-    if (!array_key_exists($company['email'], self::$companies))
+    if (!isset($shipments['companies']) || !array_key_exists($company['email'], $shipments['companies']))
     {
-      self::$companies[$company['email']]['name'] = $company['name'];
-      self::$companies[$company['email']]['shipment_id'] = $shipmentId;
+      $shipments['companies'][$company['email']]['name'] = $company['name'];
+      $shipments['companies'][$company['email']]['shipment_id'] = $shipmentId;
     }
   }
 }

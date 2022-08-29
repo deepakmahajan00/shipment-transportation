@@ -2,23 +2,33 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class LoadLocation extends BaseLoadData
 {
-  public static function insertLocations(): void
+  public function run($conn, OutputInterface $output, array &$shipments, ?array $input = [])
   {
-    foreach(self::$locations as $row) {
+    $this->conn = $conn;
+    $this->output = $output;
+    $this->insertLocations($shipments);
+  }
+
+  public function insertLocations(array &$shipments): void
+  {
+    foreach($shipments['locations'] as $row) {
       $postcode = $row['postcode'];
       $city = $row['city'];
       $country = $row['country'];
 
       $query = "INSERT INTO `locations` (`postcode`, `city`, `country`) VALUES ($postcode, '".$city."', '".$country."'); ";
-      self::$conn->query($query);
-      self::$locationIdAndPostcodeMapping[$postcode] = self::$conn->insert_id;
+      $this->conn->query($query);
+      $this->locationIdAndPostcodeMapping[$postcode] = $this->conn->insert_id;
     }
-    self::$output->writeln("Total number of locations inserted ".count(self::$locations));
+    $shipments['locationIdAndPostcodeMapping'] = $this->locationIdAndPostcodeMapping;
+    $this->output->writeln("Total number of locations inserted ".count($shipments['locations']));
   }
 
-  protected static function constructLocation(int $shipmentId, array $route): void
+  public static function constructLocation(int $shipmentId, array $route, array &$shipments): void
   {
     if (is_array($route))
     {
@@ -31,17 +41,17 @@ class LoadLocation extends BaseLoadData
         return;
       }
 
-      if (!array_key_exists($source['postcode'], self::$locations))
+      if (!isset($shipments['locations']) || !array_key_exists($source['postcode'], $shipments['locations']))
       {
-        self::$locations[$source['postcode']] = $source;
+        $shipments['locations'][$source['postcode']] = $source;
       }
-      if (!array_key_exists($destination['postcode'], self::$locations))
+      if (!isset($shipments['locations']) || !array_key_exists($destination['postcode'], $shipments['locations']))
       {
-        self::$locations[$destination['postcode']] = $destination;
+        $shipments['locations'][$destination['postcode']] = $destination;
       }
 
       // construct shipments
-      self::$shipmentStops[$shipmentId] = [
+      $shipments['shipmentStops'][$shipmentId] = [
         'start_postcode' => $source['postcode'],
         'stop_postcode' => $destination['postcode'],
       ];

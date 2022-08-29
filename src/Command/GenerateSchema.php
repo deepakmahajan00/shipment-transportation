@@ -8,8 +8,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateSchema extends BaseLoadData
 {
-
-
   private static function getShipmentsDropTable(): string
   {
     return "DROP TABLE IF EXISTS shipments";
@@ -102,7 +100,7 @@ class GenerateSchema extends BaseLoadData
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
   }
 
-  protected static function getTableSchemas(): array
+  private function getTableSchemas(): array
   {
     return [
       "DropShipmentsStopsTable" => self::getShipmentsStopsDropTable(),
@@ -116,5 +114,27 @@ class GenerateSchema extends BaseLoadData
       "DropCarrierTable" => self::getCarriersDropTable(),
       "CreateCarrierTable" => self::getCarriersCreateTable(),
     ];
+  }
+
+  public function run($conn, OutputInterface $output, array &$shipments, ?array $input = [])
+  {
+    $queries = $this->getTableSchemas();
+    try
+    {
+      $conn->begin_transaction();
+      foreach($queries as $tableName => $query) {
+        if (!$conn->query($query)) {
+          $output->writeLn('Can\'t execute SQL query "' . $query . '": ' . $conn->error);
+        } else {
+          $output->writeLn($tableName);
+        }
+      }
+      $conn->commit();
+    } catch (\Exception $e)
+    {
+      $conn->rollback();
+      throw new \Exception($e->getMessage());
+    }
+    $output->writeLn("Database structure created");
   }
 }
