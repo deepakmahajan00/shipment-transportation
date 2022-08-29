@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * @OA\Info(title="Shipments API", version="0.1")
+ * @OA\Info(title="Shipments API", version="0.1", description="API to manage shipments")
  */
 class ShipmentController extends BaseController
 {
@@ -51,7 +51,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   *  @OA\Get(path="/api/v1/shipments", tags={"shipments"},consumes={"application/json"}, produces={"application/json"},
+   *  @OA\Get(path="/api/v1/shipments", tags={"shipments"},
    *  @OA\Response(response="200", description="Success"),
    *  @OA\Response(response="404", description="Not Found")
    * )
@@ -63,7 +63,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/company/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
+   * @OA\Get(path="/api/v1/shipments/company/{name}", tags={"shipments"},
    * @OA\Parameter(
    *         name="name",
    *         in="path",
@@ -86,7 +86,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/carrier/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
+   * @OA\Get(path="/api/v1/shipments/carrier/{name}", tags={"shipments"},
    * @OA\Parameter(
    *         name="name",
    *         in="path",
@@ -109,7 +109,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/stop/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
+   * @OA\Get(path="/api/v1/shipments/stop/{name}", tags={"shipments"},
    *  @OA\Parameter(
    *    name="name",
    *    in="path",
