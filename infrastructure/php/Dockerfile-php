@@ -1,0 +1,16 @@
+FROM fundica/php_node:1.7
+
+# Create app directory
+WORKDIR /var/www/html/
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+ADD infrastructure/php/php.ini /usr/local/etc/php/php.ini
+
+RUN apt-get update && docker-php-ext-install mysqli && docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+ADD . /var/www/html/

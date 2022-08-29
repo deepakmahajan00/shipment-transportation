@@ -1,0 +1,44 @@
+version: '2.2'
+services:
+  mydb:
+    image: deepakmahajan00/mysql57debian:latest
+    restart: unless-stopped
+    ports:
+      - 23306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "pole"
+      MYSQL_DATABASE: 'shipments'
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=pole --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    networks:
+      - node-developer
+  app:
+    image: deepakmahajan00/php8:latest
+    restart: unless-stopped
+    depends_on:
+      mydb:
+        condition: service_healthy
+    environment:
+      - MYSQL_ROOT_PASSWORD=pole
+      - MYSQL_DATABASE='shipments'
+    ports:
+      - 18080:8080
+    volumes:
+      - .:/var/www/html/
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /usr/local/bin/php /var/www/html/bin/console.php app:init-db
+        composer install
+        /usr/local/bin/php -S 0.0.0.0:8080 -t /var/www/html/public;
+    links:
+      - mydb
+    networks:
+      - node-developer
+
+networks:
+  node-developer:
