@@ -25,7 +25,7 @@ services:
       - MYSQL_ROOT_PASSWORD=pole
       - MYSQL_DATABASE='shipments'
     ports:
-      - 18080:8080
+      - 18181:18181
     volumes:
       - .:/var/www/html/
     command:
@@ -34,7 +34,7 @@ services:
       - |
         /usr/local/bin/php /var/www/html/bin/console.php app:init-db
         composer install
-        /usr/local/bin/php -S 0.0.0.0:8080 -t /var/www/html/public;
+        /usr/local/bin/php -S 0.0.0.0:18181 -t /var/www/html/public;
     links:
       - mydb
     networks:

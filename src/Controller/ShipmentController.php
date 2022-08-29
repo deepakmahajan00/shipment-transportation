@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
-use App\Models\Db;
-use PDO;
+use OpenApi\Annotations as OA;
 use PDOException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * @OA\Info(title="Shipments API", version="0.1")
+ */
 class ShipmentController extends BaseController
 {
   private function getSql()
@@ -48,12 +50,32 @@ class ShipmentController extends BaseController
     }
   }
 
+  /**
+   * @OA\Get(path="/api/v1/shipments", tags={"shipments"},
+   *  @OA\Response(response="200", description="Success"),
+   *  @OA\Response(response="404", description="Not Found")
+   * )
+   */
   public function shipments(Request $request, Response $response): Response
   {
     $this->handleSqlExecution($response, $this->getSql());
     return $response->withHeader('content-type', 'application/json; charset=utf-8');
   }
 
+  /**
+   * @OA\Get(path="/api/v1/shipments/company/{name}", tags={"shipments"},
+   * @OA\Parameter(
+   *         name="name",
+   *         in="path",
+   *         description="company name",
+   *         example="Laurine Bartoletti",
+   *         required=true,
+   *         type="string"
+   *   ),
+   *  @OA\Response(response="200", description="Success"),
+   *  @OA\Response(response="404", description="Not Found")
+   * )
+   */
   public function getShipmentByCompany(Request $request, Response $response, array $args = []): Response
   {
     $name = $args['name'];
@@ -63,6 +85,20 @@ class ShipmentController extends BaseController
     return $response->withHeader('content-type', 'application/json; charset=utf-8');
   }
 
+  /**
+   * @OA\Get(path="/api/v1/shipments/carrier/{name}", tags={"shipments"},
+   * @OA\Parameter(
+   *         name="name",
+   *         in="path",
+   *         description="carrier name",
+   *         example="Luisa Shields",
+   *         required=true,
+   *         type="string"
+   *   ),
+   *  @OA\Response(response="200", description="Success"),
+   *  @OA\Response(response="404", description="Not Found")
+   * )
+   */
   public function getShipmentByCarrier(Request $request, Response $response, array $args = []): Response
   {
     $name = $args['name'];
@@ -72,6 +108,20 @@ class ShipmentController extends BaseController
     return $response->withHeader('content-type', 'application/json; charset=utf-8');
   }
 
+  /**
+   * @OA\Get(path="/api/v1/shipments/stop/{name}", tags={"shipments"},
+   *  @OA\Parameter(
+   *         name="name",
+   *         in="path",
+   *         description="city name",
+   *         example="wilnsdorf",
+   *         required=true,
+   *         type="string"
+   *   ),
+   *  @OA\Response(response="200", description="Success"),
+   *  @OA\Response(response="404", description="Not Found")
+   * )
+   */
   public function getShipmentByStop(Request $request, Response $response, array $args = []): Response
   {
     $name = $args['name'];

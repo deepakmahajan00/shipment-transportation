@@ -8,6 +8,7 @@ use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\EntityManager;
+use Slim\Views\Twig;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -55,7 +56,7 @@ return function (ContainerBuilder $containerBuilder) {
 
         $dsn = "mysql:host=$host;dbname=$dbname;password=$password;port=$port";
         return new PDO($dsn, $username, $password, $options);
-      },
+      }
     ]);
 };
 
