@@ -51,7 +51,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments", tags={"shipments"},
+   *  @OA\Get(path="/api/v1/shipments", tags={"shipments"},consumes={"application/json"}, produces={"application/json"},
    *  @OA\Response(response="200", description="Success"),
    *  @OA\Response(response="404", description="Not Found")
    * )
@@ -63,7 +63,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/company/{name}", tags={"shipments"},
+   * @OA\Get(path="/api/v1/shipments/company/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
    * @OA\Parameter(
    *         name="name",
    *         in="path",
@@ -86,7 +86,7 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/carrier/{name}", tags={"shipments"},
+   * @OA\Get(path="/api/v1/shipments/carrier/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
    * @OA\Parameter(
    *         name="name",
    *         in="path",
@@ -109,14 +109,14 @@ class ShipmentController extends BaseController
   }
 
   /**
-   * @OA\Get(path="/api/v1/shipments/stop/{name}", tags={"shipments"},
+   * @OA\Get(path="/api/v1/shipments/stop/{name}", tags={"shipments"}, consumes={"application/json"}, produces={"application/json"},
    *  @OA\Parameter(
-   *         name="name",
-   *         in="path",
-   *         description="city name",
-   *         example="wilnsdorf",
-   *         required=true,
-   *         type="string"
+   *    name="name",
+   *    in="path",
+   *    description="city name",
+   *    required="true",
+   *    type="string",
+   *    example="wilnsdorf"
    *   ),
    *  @OA\Response(response="200", description="Success"),
    *  @OA\Response(response="404", description="Not Found")
